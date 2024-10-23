@@ -12,7 +12,7 @@ import pandas as pd
 from collections import OrderedDict
 from datetime import datetime
 
-import alfworld.gen.constants
+from alfworld.gen import constants
 from alfworld.gen.agents.deterministic_planner_agent import DeterministicPlannerAgent
 from alfworld.env.thor_env import ThorEnv
 from alfworld.gen.game_states.task_game_state_full_knowledge import TaskGameStateFullKnowledge
@@ -598,12 +598,22 @@ def main(args):
                 delete_save(args.in_parallel)
 
             # add to save structure.
-            succ_traj = succ_traj.append({
+            # succ_traj = succ_traj.append({
+            #     "goal": gtype,
+            #     "movable": movable_obj,
+            #     "pickup": pickup_obj,
+            #     "receptacle": receptacle_obj,
+            #     "scene": str(sampled_scene)}, ignore_index=True)
+            new_row = pd.DataFrame([{
                 "goal": gtype,
-                "movable": movable_obj,
                 "pickup": pickup_obj,
+                "movable": movable_obj,
                 "receptacle": receptacle_obj,
-                "scene": str(sampled_scene)}, ignore_index=True)
+                "scene": str(sampled_scene),
+            }])
+
+            succ_traj = pd.concat([succ_traj, new_row], ignore_index=True)
+
             target_remaining -= 1
             tries_remaining += args.trials_before_fail  # on success, add more tries for future successes
 
