@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import pandas as pd
 
 def load_successes_from_disk(succ_dir, succ_traj, prune_trials, target_count,
                              cap_count=None, min_count=None):
@@ -40,12 +40,22 @@ def load_successes_from_disk(succ_dir, succ_traj, prune_trials, target_count,
         if min_count is None or tuple_counts[k] >= min_count:
             to_add = tuple_counts[k] if cap_count is None else cap_count
             for _ in range(to_add):
-                succ_traj = succ_traj.append({
+                # succ_traj = succ_traj.append({
+                #     "goal": k[0],
+                #     "pickup": k[1],
+                #     "movable": k[2],
+                #     "receptacle": k[3],
+                #     "scene": k[4]}, ignore_index=True)
+                new_row = pd.DataFrame([{
                     "goal": k[0],
                     "pickup": k[1],
                     "movable": k[2],
                     "receptacle": k[3],
-                    "scene": k[4]}, ignore_index=True)
+                    "scene": k[4]
+                }])
+
+                succ_traj = pd.concat([succ_traj, new_row], ignore_index=True)
+
     tuples_at_target_count = set([t for t in tuple_counts if tuple_counts[t] >= target_count])
 
     return succ_traj, tuples_at_target_count

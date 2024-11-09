@@ -143,7 +143,7 @@ def get_plan_from_file(args):
                    '-f %s ' % (domain, solver_type, filepath))
         if DEBUG:
             print(command)
-        planner_output = subprocess.check_output(shlex.split(command), timeout=30)
+        planner_output = subprocess.check_output(shlex.split(command), timeout=60)
     except subprocess.CalledProcessError as error:
         # Plan is done
         output_str = error.output.decode('utf-8')

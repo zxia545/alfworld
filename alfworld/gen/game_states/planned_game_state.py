@@ -100,7 +100,7 @@ class PlannedGameState(GameStateBase, ABC):
             self.pddl_start = PlannedGameState.fix_pddl_str_chars(self.pddl_start)
             self.pddl_init = PlannedGameState.fix_pddl_str_chars(self.pddl_init)
             self.pddl_goal = PlannedGameState.fix_pddl_str_chars(self.pddl_goal)
-
+            
         # pddl_mid section
         agent_location = 'loc|%d|%d|%d|%d' % (self.pose[0], self.pose[1], self.pose[2], self.pose[3])
 
@@ -345,11 +345,387 @@ class PlannedGameState(GameStateBase, ABC):
             extra_facts,
             )
 
+        receptacle_type_str = PlannedGameState.fix_pddl_str_chars(receptacle_type_str)
+        object_type_str = PlannedGameState.fix_pddl_str_chars(object_type_str)
+        receptacle_objects_str = PlannedGameState.fix_pddl_str_chars(receptacle_objects_str)
+        openable_str = PlannedGameState.fix_pddl_str_chars(openable_str)
+        agent_location_str = PlannedGameState.fix_pddl_str_chars(agent_location_str)
+        opened_receptacle_str = PlannedGameState.fix_pddl_str_chars(opened_receptacle_str)
+        cleanable_str = PlannedGameState.fix_pddl_str_chars(cleanable_str)
+        is_clean_str = PlannedGameState.fix_pddl_str_chars(is_clean_str)
+        heatable_str = PlannedGameState.fix_pddl_str_chars(heatable_str)
+        coolable_str = PlannedGameState.fix_pddl_str_chars(coolable_str)
+        is_hot_str = PlannedGameState.fix_pddl_str_chars(is_hot_str)
+        is_cool_str = PlannedGameState.fix_pddl_str_chars(is_cool_str)
+        toggleable_str = PlannedGameState.fix_pddl_str_chars(toggleable_str)
+        is_on_str = PlannedGameState.fix_pddl_str_chars(is_on_str)
+        recep_obj_str = PlannedGameState.fix_pddl_str_chars(recep_obj_str)
+        sliceable_str = PlannedGameState.fix_pddl_str_chars(sliceable_str)
+        is_sliced_str = PlannedGameState.fix_pddl_str_chars(is_sliced_str)
+        in_receptacle_str = PlannedGameState.fix_pddl_str_chars(in_receptacle_str)
+        was_in_receptacle_str = PlannedGameState.fix_pddl_str_chars(was_in_receptacle_str)
+        location_distance_str = PlannedGameState.fix_pddl_str_chars(location_distance_str)
+        receptacle_at_location_str = PlannedGameState.fix_pddl_str_chars(receptacle_at_location_str)
+        extra_facts = PlannedGameState.fix_pddl_str_chars(extra_facts)
+        
+        
+        
+        
+        split_txt = '\n        '
+        mid_receptacle_type_objects = receptacle_type_str.split(split_txt)
+        mid_object_type_objects = object_type_str.split(split_txt)
+        mid_receptacle_objects = receptacle_objects_str.split(split_txt)
+        mid_openable_objects = openable_str.split(split_txt)
+        mid_agent_location = agent_location_str.split(split_txt)
+        mid_opened_receptacle = opened_receptacle_str.split(split_txt)
+        mid_cleanable_objects = cleanable_str.split(split_txt)
+        mid_is_clean_objects = is_clean_str.split(split_txt)
+        mid_heatable_objects = heatable_str.split(split_txt)
+        mid_coolable_objects = coolable_str.split(split_txt)
+        mid_is_hot_objects = is_hot_str.split(split_txt)
+        mid_is_cool_objects = is_cool_str.split(split_txt)
+        mid_toggleable_objects = toggleable_str.split(split_txt)
+        mid_is_on_objects = is_on_str.split(split_txt)
+        mid_recep_obj_objects = recep_obj_str.split(split_txt)
+        mid_sliceable_objects = sliceable_str.split(split_txt)
+        mid_is_sliced_objects = is_sliced_str.split(split_txt)
+        mid_in_receptacle_objects = in_receptacle_str.split(split_txt)
+        mid_was_in_receptacle_objects = was_in_receptacle_str.split(split_txt)
+        mid_location_distance_objects = location_distance_str.split(split_txt)
+        mid_receptacle_at_location_objects = receptacle_at_location_str.split(split_txt)
+        mid_extra_facts = extra_facts.split(split_txt)
+        
+        
+        mid_location_list = []
+        mid_object_list = []
+        mid_rtype_list = []
+        mid_receptacle_list = []
+        mid_otype_list = []
+        
+        # get mid_receptacle_type_objects
+        if len(mid_receptacle_type_objects) > 0:
+            for this_receptacle_type in mid_receptacle_type_objects:
+                # example is like this :(receptacleType DiningTable_bar__minus_03_dot_03_bar__plus_00_dot_00_bar__minus_00_dot_44 DiningTableType)
+                this_receptacle_type = this_receptacle_type.replace('(', '').replace(')', '')
+                
+                parts = this_receptacle_type.split(' ')
+                if len(parts) >= 3:
+                    this_receptacle = parts[1]
+                    this_rtype = parts[2]
+
+                    mid_receptacle_list.append(this_receptacle)
+                    mid_rtype_list.append(this_rtype)
+                    
+        # get mid_object_type_objects
+        if len(mid_object_type_objects) > 0:
+            for this_object_type in mid_object_type_objects:
+                # example is like this :(objectType Apple_bar__plus_00_dot_00_bar__minus_00_dot_44 AppleType)
+                this_object_type = this_object_type.replace('(', '').replace(')', '')
+                
+                parts = this_object_type.split(' ')
+                if len(parts) >= 3:
+                    this_object = parts[1]
+                    this_otype = parts[2]
+
+                    mid_object_list.append(this_object)
+                    mid_otype_list.append(this_otype)
+        
+        if len(mid_receptacle_objects) > 0:
+            for this_receptacle in mid_receptacle_objects:
+                this_receptacle = this_receptacle.replace('(', '').replace(')', '')
+                parts = this_receptacle.split(' ')
+                if len(parts) >= 2:
+                    this_object =parts[1]
+                    mid_object_list.append(this_object)
+
+                
+        
+        # Example parsing mid_openable_objects
+        if len(mid_openable_objects) > 0:
+            for openable in mid_openable_objects:
+                openable = openable.replace('(', '').replace(')', '')
+                parts = openable.split(' ')
+                if len(parts) >= 2:
+                    openable_obj = parts[1]
+                    mid_receptacle_list.append(openable_obj)
+                    # print(f"Openable Object: {openable_obj}")
+
+        # Example parsing mid_agent_location
+        if len(mid_agent_location) > 0:
+            for location in mid_agent_location:
+                location = location.replace('(', '').replace(')', '')
+                parts = location.split(' ')
+                if len(parts) >= 3:
+                    agent = parts[1]
+                    loc = parts[2]
+                    mid_location_list.append(loc)
+                    # print(f"Agent: {agent}, Location: {loc}")
+
+        # Example parsing mid_opened_receptacle
+        if len(mid_opened_receptacle) > 0:
+            for opened in mid_opened_receptacle:
+                opened = opened.replace('(', '').replace(')', '')
+                parts = opened.split(' ')
+                if len(parts) >= 2:
+                    opened_recep = parts[1]
+                    mid_receptacle_list.append(opened_recep)
+                    # print(f"Opened Receptacle: {opened_recep}")
+
+        # Example parsing mid_cleanable_objects
+        if len(mid_cleanable_objects) > 0:
+            for cleanable in mid_cleanable_objects:
+                cleanable = cleanable.replace('(', '').replace(')', '')
+                parts = cleanable.split(' ')
+                if len(parts) >= 2:
+                    cleanable_obj = parts[1]
+                    mid_object_list.append(cleanable_obj)
+                    # print(f"Cleanable Object: {cleanable_obj}")
+
+        # Example parsing mid_is_clean_objects
+        if len(mid_is_clean_objects) > 0:
+            for clean in mid_is_clean_objects:
+                clean = clean.replace('(', '').replace(')', '')
+                parts = clean.split(' ')
+                if len(parts) >= 2:
+                    clean_obj = parts[1]
+                    mid_object_list.append(clean_obj)
+                    # print(f"Is Clean Object: {clean_obj}")
+
+        # Example parsing mid_heatable_objects
+        if len(mid_heatable_objects) > 0:
+            for heatable in mid_heatable_objects:
+                heatable = heatable.replace('(', '').replace(')', '')
+                parts = heatable.split(' ')
+                if len(parts) >= 2:
+                    heatable_obj = parts[1]
+                    mid_object_list.append(heatable_obj)
+                    # print(f"Heatable Object: {heatable_obj}")
+
+        # Example parsing mid_coolable_objects
+        if len(mid_coolable_objects) > 0:
+            for coolable in mid_coolable_objects:
+                coolable = coolable.replace('(', '').replace(')', '')
+                parts = coolable.split(' ')
+                if len(parts) >= 2:
+                    coolable_obj = parts[1]
+                    mid_object_list.append(coolable_obj)
+                    # print(f"Coolable Object: {coolable_obj}")
+
+        # Example parsing mid_is_hot_objects
+        if len(mid_is_hot_objects) > 0:
+            for hot in mid_is_hot_objects:
+                hot = hot.replace('(', '').replace(')', '')
+                parts = hot.split(' ')
+                if len(parts) >= 2:
+                    hot_obj = parts[1]
+                    mid_object_list.append(hot_obj)
+                    # print(f"Is Hot Object: {hot_obj}")
+
+        # Example parsing mid_is_cool_objects
+        if len(mid_is_cool_objects) > 0:
+            for cool in mid_is_cool_objects:
+                cool = cool.replace('(', '').replace(')', '')
+                parts = cool.split(' ')
+                if len(parts) >= 2:
+                    cool_obj = parts[1]
+                    mid_object_list.append(cool_obj)
+                    # print(f"Is Cool Object: {cool_obj}")
+
+        # Example parsing mid_toggleable_objects
+        if len(mid_toggleable_objects) > 0:
+            for toggleable in mid_toggleable_objects:
+                toggleable = toggleable.replace('(', '').replace(')', '')
+                parts = toggleable.split(' ')
+                if len(parts) >= 2:
+                    toggleable_obj = parts[1]
+                    mid_object_list.append(toggleable_obj)
+                    # print(f"Toggleable Object: {toggleable_obj}")
+
+        # Example parsing mid_is_on_objects
+        if len(mid_is_on_objects) > 0:
+            for is_on in mid_is_on_objects:
+                is_on = is_on.replace('(', '').replace(')', '')
+                parts = is_on.split(' ')
+                if len(parts) >= 2:
+                    is_on_obj = parts[1]
+                    mid_object_list.append(is_on_obj)
+                    # print(f"Is On Object: {is_on_obj}")
+
+        # Example parsing mid_recep_obj_objects
+        if len(mid_recep_obj_objects) > 0:
+            for recep_obj in mid_recep_obj_objects:
+                recep_obj = recep_obj.replace('(', '').replace(')', '')
+                parts = recep_obj.split(' ')
+                if len(parts) >= 2:
+                    recep_obj_name = parts[1]
+                    mid_object_list.append(recep_obj_name)
+                    # print(f"Receptacle Object: {recep_obj_name}")
+
+        # Example parsing mid_sliceable_objects
+        if len(mid_sliceable_objects) > 0:
+            for sliceable in mid_sliceable_objects:
+                sliceable = sliceable.replace('(', '').replace(')', '')
+                parts = sliceable.split(' ')
+                if len(parts) >= 2:
+                    sliceable_obj = parts[1]
+                    mid_object_list.append(sliceable_obj)
+                    # print(f"Sliceable Object: {sliceable_obj}")
+
+        # Example parsing mid_is_sliced_objects
+        if len(mid_is_sliced_objects) > 0:
+            for is_sliced in mid_is_sliced_objects:
+                is_sliced = is_sliced.replace('(', '').replace(')', '')
+                parts = is_sliced.split(' ')
+                if len(parts) >= 2:
+                    is_sliced_obj = parts[1]
+                    mid_object_list.append(is_sliced_obj)
+                    # print(f"Is Sliced Object: {is_sliced_obj}")
+
+        # Example parsing mid_in_receptacle_objects
+        if len(mid_in_receptacle_objects) > 0:
+            for in_receptacle in mid_in_receptacle_objects:
+                in_receptacle = in_receptacle.replace('(', '').replace(')', '')
+                parts = in_receptacle.split(' ')
+                if len(parts) >= 3:
+                    obj = parts[1]
+                    recep = parts[2]
+                    mid_object_list.append(obj)
+                    mid_object_list.append(recep)
+                    # print(f"Object: {obj}, In Receptacle: {recep}")
+
+        # Example parsing mid_was_in_receptacle_objects
+        if len(mid_was_in_receptacle_objects) > 0:
+            for was_in_receptacle in mid_was_in_receptacle_objects:
+                was_in_receptacle = was_in_receptacle.replace('(', '').replace(')', '')
+                parts = was_in_receptacle.split(' ')
+                if len(parts) >= 3:
+                    obj = parts[2]
+                    recep = parts[3]
+                    mid_object_list.append(obj)
+                    mid_receptacle_list.append(recep)
+                    # print(f"Object: {obj}, Was In Receptacle: {recep}")
+
+        # Example parsing mid_location_distance_objects
+        if len(mid_location_distance_objects) > 0:
+            for location_distance in mid_location_distance_objects:
+                location_distance = location_distance.split('(')[2]
+                location_distance = location_distance.split(')')[0]
+                parts = location_distance.split(' ')
+                if len(parts) >= 3:
+                    loc1 = parts[1]
+                    loc2 = parts[2]
+                    mid_location_list.append(loc1)
+                    mid_location_list.append(loc2)
+                    # print(f"Location Distance: {loc1} to {loc2}")
+
+        # Example parsing mid_receptacle_at_location_objects
+        if len(mid_receptacle_at_location_objects) > 0:
+            for recep_at_location in mid_receptacle_at_location_objects:
+                recep_at_location = recep_at_location.replace('(', '').replace(')', '')
+                parts = recep_at_location.split(' ')
+                if len(parts) >= 3:
+                    recep = parts[1]
+                    loc = parts[2]
+                    mid_receptacle_list.append(recep)
+                    mid_location_list.append(loc)
+                    # print(f"Receptacle: {recep}, At Location: {loc}")
+
+        # Example parsing mid_extra_facts
+        if len(mid_extra_facts) > 0:
+            for fact in mid_extra_facts:
+                fact = fact.replace('(', '').replace(')', '')
+                parts = fact.split(' ')
+                if len(parts) >= 3:
+                    obj = parts[1]
+                    loc = parts[2]
+                    mid_object_list.append(obj)
+                    mid_location_list.append(loc)
+                    # print(f"Object: {obj}, Location: {loc}")
+                    
+        # remove duplicates
+        mid_location_list = list(set(mid_location_list))
+        mid_object_list = list(set(mid_object_list))
+        mid_rtype_list = list(set(mid_rtype_list))
+        mid_receptacle_list = list(set(mid_receptacle_list))
+        
+                    
+        this_mid_receptacle_str = '\n        '.join(sorted([receptacle + ' - receptacle'
+                                            for receptacle in mid_receptacle_list]))
+
+        this_mid_object_str = '\n        '.join(sorted([obj + ' - object' for obj in mid_object_list]))
+        
+        this_mid_location_str = '\n        '.join(sorted([obj + ' - location' for obj in mid_location_list]))
+        
+        this_mid_otype_str = '\n        '.join(sorted([obj + ' - otype' for obj in mid_otype_list]))
+        this_mid_rtype_str = '\n        '.join(sorted([obj + ' - rtype' for obj in mid_rtype_list]))
+                
+        own_pddl_mid_start = '''
+        %s
+        %s
+        %s
+        %s
+        %s
+        )
+''' % (
+            this_mid_object_str,
+            this_mid_receptacle_str,
+            this_mid_location_str,
+            this_mid_otype_str,
+            this_mid_rtype_str
+            )
+        """
+            agent
+            location
+            receptacle
+            object
+            rtype
+            otype
+            
+            
+            
+            
+            (atLocation ?a - agent ?l - location)                     ; true if the agent is at the location
+            (receptacleAtLocation ?r - receptacle ?l - location)      ; true if the receptacle is at the location (constant)
+            (objectAtLocation ?o - object ?l - location)              ; true if the object is at the location
+            (openable ?r - receptacle)                                ; true if a receptacle is openable
+            (opened ?r - receptacle)                                  ; true if a receptacle is opened
+            (inReceptacle ?o - object ?r - receptacle)                ; object ?o is in receptacle ?r
+            (isReceptacleObject ?o - object)                          ; true if the object can have things put inside it
+            (inReceptacleObject ?innerObject - object ?outerObject - object)                ; object ?innerObject is inside object ?outerObject
+            (isReceptacleObjectFull ?o - object)                      ; true if the receptacle object contains something
+            (wasInReceptacle ?o - object ?r - receptacle)             ; object ?o was or is in receptacle ?r now or some time in the past
+            (checked ?r - receptacle)                                 ; whether the receptacle has been looked inside/visited
+            (examined ?l - location)                                  ; TODO
+            (receptacleType ?r - receptacle ?t - rtype)               ; the type of receptacle (Cabinet vs Cabinet|01|2...)
+            (canContain ?rt - rtype ?ot - otype)                      ; true if receptacle can hold object
+            (objectType ?o - object ?t - otype)                       ; the type of object (Apple vs Apple|01|2...)
+            (holds ?a - agent ?o - object)                            ; object ?o is held by agent ?a
+            (holdsAny ?a - agent)                                     ; agent ?a holds an object
+            (holdsAnyReceptacleObject ?a - agent)                        ; agent ?a holds a receptacle object
+            (full ?r - receptacle)                                    ; true if the receptacle has no remaining space
+            (isClean ?o - object)                                     ; true if the object has been clean in sink
+            (cleanable ?o - object)                                   ; true if the object can be placed in a sink
+            (isHot ?o - object)                                       ; true if the object has been heated up
+            (heatable ?o - object)                                    ; true if the object can be heated up in a microwave
+            (isCool ?o - object)                                      ; true if the object has been cooled
+            (coolable ?o - object)                                    ; true if the object can be cooled in the fridge
+            (pickupable ?o - object)                                   ; true if the object can be picked up
+            (moveable ?o - object)                                      ; true if the object can be moved
+            (toggleable ?o - object)                                  ; true if the object can be turned on/off
+            (isOn ?o - object)                                        ; true if the object is on
+            (isToggled ?o - object)                                   ; true if the object has been toggled
+            (sliceable ?o - object)                                   ; true if the object can be sliced
+            (isSliced ?o - object) 
+        """
+        
+        
+        
+
         pddl_mid_start = PlannedGameState.fix_pddl_str_chars(pddl_mid_start)
         pddl_mid_init = PlannedGameState.fix_pddl_str_chars(pddl_mid_init)
 
         pddl_str = (self.pddl_start + '\n' +
-                    pddl_mid_start + '\n' +
+                    own_pddl_mid_start + '\n' +
                     self.pddl_init + '\n' +
                     pddl_mid_init + '\n' +
                     self.pddl_goal)

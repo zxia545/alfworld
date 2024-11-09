@@ -34,7 +34,8 @@ class PlanAgent(AgentBase):
                 if plan_action['action'] == 'GotoLocation':
                     plan_action = self.game_state.get_teleport_action(plan_action)
                 elif plan_action['action'] == 'End':
-                    break
+                    print(f'This can end')
+                    # break
                 self.controller_agent.step(plan_action, executing_plan=True)
                 step_count += 1
                 if self.controller_agent.current_frame_count >= constants.MAX_EPISODE_LENGTH:
